@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="kr">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>스마트 금융 계산기-경화여중</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy this line! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+  </head>
+
+ <body role="document">
+
+    <!-- Fixed navbar -->
+    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">스마트 금융 계산기</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </div>
+
+    <div class="container theme-showcase" role="main">
+
+      <!-- Main jumbotron for a primary marketing message or call to action -->
+      <div class="jumbotron">
+        <h2>스마트 금융 계산기 입니다.</h2>
+		<p></p>
+		<p>경화 여자 중학교 여러분 반갑습니다.</p>
+        <p>지문을 잘 읽고, 아래의 빈칸에 값을 입력한 후에 '알아보기' 버튼을 눌러서 알맞는 금액을 계산해보세요.</p>
+      </div>
+	  
+	  <div>
+		  <p>
+		  <h3><span class="label label-danger">목표금액</span></h3>
+		  <input type="text" id="valGoal" placeholder="예) 2000">
+		  <span class="label label-default">만원</span><br>
+		  숫자만 입력하세요. 예) 1000만원 => 1000, 5000만원 => 5000
+		  </p>
+		  <p>
+		  <h3><span class="label label-warning">불입기간</span></h3>
+		  <input type="text" id="valMonth" placeholder="예) 12">
+		  <span class="label label-default">개월</span><br>
+		  숫자만 입력하세요. 예) 12개월 => 12, 36개월 => 36
+		  </p>
+		  <p>
+		  <h3><span class="label label-success">이자율(연)</span></h3>
+		  <div class="btn-group">
+		    <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
+		    <span id="txtRate">선택</span> <span class="caret"></span>
+		    </button>
+		    <ul class="dropdown-menu">
+			    <li id="rate1"><a href="#">단리</a></li>
+			    <li id="rate2"><a href="#">월복리</a></li>
+			    <li id="rate3"><a href="#">연복리</a></li>
+		    </ul>
+			<input type="hidden" id="rate" value="-1">
+		  </div>
+		  <input type="text" id="valRate" placeholder="예) 1.0">
+		  <span class="label label-default">%</span><br>
+		  숫자만 입력하세요. 예) 0.3% => 0.3, 0.5% => 0.5
+		  </p>		  		  
+		  <button type="button" class="btn btn-lg btn-primary" id="btnGo">알아보기</button>
+	  </div>
+	  <br><br>
+
+	  <div id="result" class="well">
+		  
+	  </div>
+<script>
+$("#rate1").click(function(){ $('#txtRate').text('단리');  $("#rate").val(0); });
+$("#rate2").click(function(){ $('#txtRate').text('월복리'); $("#rate").val(1); });
+$("#rate3").click(function(){ $('#txtRate').text('연복리'); $("#rate").val(2); });
+
+$("#btnGo").click(function(){
+	
+	if( $("#valRate").val()<=0 || $("#valGoal").val()<=0 || $("#valMonth").val()<=0 )
+	{
+	    $('#result').html( '빈칸을 모두 입력해주세요.');
+		alert('빈칸을 모두 입력해주세요.');
+		return;
+	}
+	if( $("#rate").val()<0)
+	{
+	    $('#result').html( '적용할 이자를 선택해주세요.');
+		alert('적용할 이자를 선택해주세요.');
+		return;
+	}
+	var html="";
+	html = html + '<p><h5><span class="label label-primary">목표금액</span></h5>'+ $("#valGoal").val()+"만원</p>";
+	html = html + '<p><h5><span class="label label-primary">불입기간</span></h5>'+ $("#valMonth").val()+"개월</p>";
+	html = html + '<p><h5><span class="label label-primary">이자율</span></h5>'+ $('#txtRate').text()+$("#valRate").val()+"%</p>";
+	html = html + "<br><br>";
+	html = html + "비과세 상품 적용시 매월 적금액은";
+	html = html + "";	
+	
+	var t = $("#valMonth").val();
+	if ( $("#rate").val() == 0) { t = 1; }
+	if ( $("#rate").val() == 2) { t = t/12; }
+	
+	var x = 1+ (($("#valRate").val()/12)/100);
+	var s = 0;	
+	for(var i=0;i<t;i++)
+	{
+		s = (s + 1)*x;
+	}
+	html = html + s+"<br>";	
+	
+	html = html + $("#valGoal").val()/s;
+    $('#result').html( html );
+});
+</script>
+    </div> <!-- /container -->
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+
+    <script src="js/bootstrap.min.js"></script>
+  </body>
+  </html>
