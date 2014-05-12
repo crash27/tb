@@ -56,18 +56,18 @@
 		<p> 현재는 월복리 계산만 지원합니다.</p>
       </div>
 	  
-	  <div>
+	  <div style="padding-left:50px;">
 		  <p>
 		  <h3><span class="label label-danger">목표금액</span></h3>
 		  <input type="text" id="valGoal" placeholder="예) 2000">
 		  <span class="label label-default">만원</span><br>
-		  숫자만 입력하세요. 예) 1000만원 => 1000, 5000만원 => 5000
+		  예) 1000만원 => 1000, 5000만원 => 5000
 		  </p>
 		  <p>
 		  <h3><span class="label label-warning">불입기간</span></h3>
 		  <input type="text" id="valMonth" placeholder="예) 12">
 		  <span class="label label-default">개월</span><br>
-		  숫자만 입력하세요. 예) 12개월 => 12, 36개월 => 36
+		  예) 12개월 => 12, 36개월 => 36
 		  </p>
 		  <p>
 		  <h3><span class="label label-success">이자율(연)</span></h3>
@@ -84,8 +84,8 @@
 		  </div>
 		  <input type="text" id="valRate" placeholder="예) 1.0">
 		  <span class="label label-default">%</span><br>
-		  숫자만 입력하세요. 예) 0.3% => 0.3, 0.5% => 0.5
-		  </p>		  		  
+		  예) 3% => 3, 2.7% => 2.7
+		  </p><br>
 		  <button type="button" class="btn btn-lg btn-primary" id="btnGo">알아보기</button>
 	  </div>
 	  <br><br>
@@ -112,6 +112,13 @@ $("#btnGo").click(function(){
 		alert('적용할 이자를 선택해주세요.');
 		return;
 	}
+	if( $("#rate").val()==2 && $("#valMonth").val()%12!=0 )
+	{
+	    $('#result').html( '연복리는 12개월 단위로만 계산이 가능합니다.');
+		alert('연복리는 12개월 단위로만 계산이 가능합니다.');
+		return;
+	}
+	
 	var html="";
 	html = html + '<p><h5><span class="label label-primary">목표금액</span></h5>'+ $("#valGoal").val()+"만원</p>";
 	html = html + '<p><h5><span class="label label-primary">불입기간</span></h5>'+ $("#valMonth").val()+"개월</p>";
@@ -122,17 +129,34 @@ $("#btnGo").click(function(){
 	html = html + '<span class="label label-warning">비과세</span> 상품 사용시 매월 ';
 	html = html + "";	
 	
-	var t = $("#valMonth").val();
-	if ( $("#rate").val() == 0) { t = 1; }
-	if ( $("#rate").val() == 2) { t = t/12; }
-	
-	var x = 1+ (($("#valRate").val()/12)/100);
-	var s = 0;	
-	for(var i=0;i<t;i++)
+	var t = parseFloat($("#valMonth").val());
+	var result = 0;	
+	var rr = parseFloat($("#valRate").val())/12/100;
+	var Goal = parseFloat($("#valGoal").val());
+	var x = 1 + rr;
+
+	if ( $("#rate").val() == 0 )
 	{
-		s = (s + 1)*x;
+		var dd = t+(t+1)*t/2*rr;
+		result = Goal/dd;
+	}		
+	if ( $("#rate").val() == 1 )
+	{
+		var s = 0; for(var i=0;i<t;i++) { s = (s + 1)*x; }
+		result = Goal/s;
 	}
-	html = html + Math.floor($("#valGoal").val()/s*10+0.5)/10 + '<span class="label label-default">만원</span>'+ "입니다.";
+	if ( $("#rate").val() == 2 )
+	{
+		x = 1 + (parseFloat($("#valRate").val())/100);
+		t1 = Math.floor(t/12);
+		var s = 0; for(var i=0;i<t1;i++) { s = (s + 1)*x; }
+		result = Goal/s/12;
+	}
+	
+	html = html + Math.floor(result*10000) + '<span class="label label-default">원</span>'+ "입니다.</p>";
+	html = html + '<p><span class="label label-success">원금</span> '+ Math.floor((result*t)*10000) + '<span class="label label-default">원</span>'+ "입니다.";
+	html = html + '<p><span class="label label-success">이자는</span> '+ Math.floor((Goal-result*t)*10000) + '<span class="label label-default">원</span>'+ "입니다.";	
+	
     $('#result').html( html );
 });
 </script>
