@@ -21,6 +21,10 @@
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+	
+	<style>
+	.inp #btnGo { width:200px; }
+	</style>
   </head>
 
  <body role="document">
@@ -56,21 +60,24 @@
         <p>지문을 잘 읽고, 아래의 빈칸에 값을 입력한 후에 '알아보기' 버튼을 눌러서 알맞는 금액을 계산해보세요.</p>
       </div>
 	  
-	  <div style="padding-left:50px;">
-		  <p>
+	  <div class="inp">
+
 		  <h3><span class="label label-danger">목표금액</span></h3>
+		  <p>		  
 		  <input type="text" id="valGoal" placeholder="예) 2000">
 		  <span class="label label-default">만원</span><br>
 		  예) 1000만원 => 1000, 5000만원 => 5000
 		  </p>
-		  <p>
+
 		  <h3><span class="label label-warning">불입기간</span></h3>
+		  <p>		  
 		  <input type="text" id="valMonth" placeholder="예) 12">
 		  <span class="label label-default">개월</span><br>
 		  예) 12개월 => 12, 36개월 => 36
 		  </p>
-		  <p>
+
 		  <h3><span class="label label-success">이자율(연)</span></h3>
+		  <p>		  
 		  <div class="btn-group">
 		    <button class="btn btn-default btn-sm dropdown-toggle" type="button" data-toggle="dropdown">
 		    <span id="txtRate">선택</span> <span class="caret"></span>
