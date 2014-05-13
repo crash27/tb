@@ -49,11 +49,11 @@
 
       <!-- Main jumbotron for a primary marketing message or call to action -->
       <div class="jumbotron">
+		  <br>
         <h2>스마트 금융 계산기 입니다.</h2>
 		<p></p>
 		<p>경화 여자 중학교 여러분 반갑습니다.</p>
         <p>지문을 잘 읽고, 아래의 빈칸에 값을 입력한 후에 '알아보기' 버튼을 눌러서 알맞는 금액을 계산해보세요.</p>
-		<p> 현재는 월복리 계산만 지원합니다.</p>
       </div>
 	  
 	  <div style="padding-left:50px;">
@@ -97,6 +97,16 @@
 $("#rate1").click(function(){ $('#txtRate').text('단리');  $("#rate").val(0); });
 $("#rate2").click(function(){ $('#txtRate').text('월복리'); $("#rate").val(1); });
 $("#rate3").click(function(){ $('#txtRate').text('연복리'); $("#rate").val(2); });
+
+
+function set_comma(n)
+{
+	var reg = /(^[+-]?\d+)(\d{3})/;
+	n+='';
+	while(reg.test(n))
+		n=n.replace(reg,'$1'+','+'$2');
+	return n;
+}
 
 $("#btnGo").click(function(){
 	
@@ -147,15 +157,14 @@ $("#btnGo").click(function(){
 	}
 	if ( $("#rate").val() == 2 )
 	{
-		x = 1 + (parseFloat($("#valRate").val())/100);
-		t1 = Math.floor(t/12);
-		var s = 0; for(var i=0;i<t1;i++) { s = (s + 1)*x; }
-		result = Goal/s/12;
+		x = 1 + (parseFloat($("#valRate").val())/100);		
+		var dd = ( Math.pow(x,(t+1)/12)-Math.pow(x,1/12) )  / ( Math.pow(x,1/12)-1 );
+		result = Goal/dd;
 	}
 	
-	html = html + Math.floor(result*10000) + '<span class="label label-default">원</span>'+ "입니다.</p>";
-	html = html + '<p><span class="label label-success">원금</span> '+ Math.floor((result*t)*10000) + '<span class="label label-default">원</span>'+ "입니다.";
-	html = html + '<p><span class="label label-success">이자는</span> '+ Math.floor((Goal-result*t)*10000) + '<span class="label label-default">원</span>'+ "입니다.";	
+	html = html + set_comma(Math.floor(result*10000+0.5)) + '<span class="label label-default">원</span>'+ "입니다.</p>";
+	html = html + '<p><span class="label label-success">원금</span> '+ set_comma(Math.floor(result*10000)*t) + '<span class="label label-default">원</span>'+ "입니다.";
+	html = html + '<p><span class="label label-success">이자는</span> '+ set_comma(Math.floor((Goal*10000-Math.floor(result*10000)*t))) + '<span class="label label-default">원</span>'+ "입니다.";	
 	
     $('#result').html( html );
 });
